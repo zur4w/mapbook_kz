@@ -1,6 +1,5 @@
 from utils.model import users
-from utils.controller import get_user_info, add_user, remove_user, update_user
-
+from utils.controller import get_user_info, add_user, remove_user, update_user, get_map, get_coordinates
 
 def main():
     print(f"Witaj {users[0]["name"]}")
@@ -12,6 +11,7 @@ def main():
         print("2 - Dodaj znajomego")
         print("3 - Usuń znajomego")
         print("4 - Edytuj dane znajomego")
+        print("5 - Wygeneruj mapę dla znajomych")
         print("==============================")
         choice: str = input("Wybierz opcję menu: ")
         if choice == "0": break
@@ -19,6 +19,7 @@ def main():
         if choice == "2": add_user(users)
         if choice == "3": remove_user(users)
         if choice == "4": update_user(users)
+        if choice == "5": get_map(users)
 
 
 if __name__ == "__main__":
