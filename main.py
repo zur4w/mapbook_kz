@@ -11,6 +11,7 @@ class User:
         self.location = location
         self.posts = posts
         self.coordinates = self.get_coordinates()
+        self.marker = map_widget.set_marker(self.coordinates[0], self.coordinates[1])
 
     def get_coordinates(self) -> list:
         import requests
@@ -31,7 +32,6 @@ def add_user():
     miejscowosc = entry_location.get()
     tmp_user = User(name = imie, surname= nazwisko, location= miejscowosc, posts= posty)
     users.append(tmp_user)
-    map_widget.set_marker(tmp_user.coordinates[0],tmp_user.coordinates[1], text=tmp_user.location)
     print(users)
     entry_name.delete(0, END)
     entry_surname.delete(0, END)
@@ -47,6 +47,7 @@ def show_users():
 
 def delete_user():
     idx = listbox_lista_obiektow.index(ACTIVE)
+    users[idx].marker.delete()
     users.pop(idx)
     show_users()
 
@@ -55,14 +56,17 @@ def user_details():
     label_name_szczegoly_obiektow_wartosc.configure(text=users[idx].name)
     label_surname_szczegoly_obiektow_wartosc.configure(text=users[idx].surname)
     label_location_szczegoly_obiektow_wartosc.configure(text=users[idx].location)
-    label_posts_szczegoly_obiektow_wartosc.configure(text=users[idx].post)
+    label_posts_szczegoly_obiektow_wartosc.configure(text=users[idx].posts)
+    map_widget.set_position(users[idx].coordinates[0],users[idx].coordinates[1])
+    map_widget.set_zoom(16)
+
 
 def edit_user():
     idx = listbox_lista_obiektow.index(ACTIVE)
     entry_name.insert(0, users[idx].name)
     entry_surname.insert(0, users[idx].surname)
-    entry_location.insert(0, users[idx].loaction)
-    entry_posts.insert(0, users[idx].post)
+    entry_location.insert(0, users[idx].location)
+    entry_posts.insert(0, users[idx].posts)
 
     button_dodaj_obiekt.configure(text="Zapisz", command=lambda:update_users(idx))
 
@@ -76,6 +80,10 @@ def update_users(idx):
     users[idx].surname=surname
     users[idx].location=location
     users[idx].post=post
+
+    users[idx].marker.delete()
+    users[idx].coordinates=users[idx].get_coordinates()
+    users[idx].marker=map_widget.set_marker(users[idx].coordinates[0],users[idx].coordinates[1])
 
     button_dodaj_obiekt.configure(text="Dodaj", command=add_user)
     show_users()
